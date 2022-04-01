@@ -7,7 +7,7 @@ import com.raduh.flowerapp.core.data.OrderModel
 
 @Entity(tableName = "Orders")
 data class OrderEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = false) val id: Int = 0,
     @ColumnInfo(name = "orders_list")
     val orders: List<OrderModel>
 )

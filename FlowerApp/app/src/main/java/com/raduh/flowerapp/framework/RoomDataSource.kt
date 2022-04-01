@@ -16,7 +16,7 @@ class RoomDataSource(context: Context) : ILocalDataSource {
     private val ordersDao = DataBase.getInstance(context).ordersDao()
 
     override suspend fun saveData(orders: List<OrderModel>) {
-        val orderEntity = OrderEntity(orders)
+        val orderEntity = OrderEntity(1, orders)
         try {
             Log.d(TAG, "Save data locally -> $orders")
             ordersDao.saveOrders(orderEntity)
@@ -26,7 +26,12 @@ class RoomDataSource(context: Context) : ILocalDataSource {
     }
 
     override fun getData(): LiveData<List<OrderModel>> {
-        val ordersLiveData = ordersDao.getOrders().map { orderEntity -> orderEntity.orders }
-        return ordersLiveData
+        return ordersDao.getOrders().map { orderEntity ->
+            if (orderEntity == null) {
+                emptyList()
+            } else {
+                orderEntity.orders
+            }
+        }
     }
 }
