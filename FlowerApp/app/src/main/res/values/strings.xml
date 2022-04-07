@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">FlowerApp</string>
+    <string name="title">Flower orders</string>
+    <string name="errorMessage">Something went wrong when retrieving the orders</string>
+    <string name="price_text">%s RON</string>
+    <string name="description_text">Description: %s</string>
 </resources>

@@ -7,16 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.raduh.flowerapp.R
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.raduh.flowerapp.core.data.Repository
+import com.raduh.flowerapp.databinding.OrdersFragmentBinding
 import com.raduh.flowerapp.framework.RetrofitService
 import com.raduh.flowerapp.framework.RoomDataSource
-import com.raduh.flowerapp.framework.service.LoadingState
 import com.raduh.flowerapp.framework.service.RetrofitFactory
 
 private val TAG = OrdersFragment::class.java.name
 
 class OrdersFragment : Fragment() {
+
+    private lateinit var ordersRecyclerView: RecyclerView
+    private lateinit var binding: OrdersFragmentBinding
+    private val adapter = OrdersAdapter()
 
     private val viewModel by viewModels<OrdersViewModel> {
         OrdersViewModelFactory(
@@ -31,27 +37,29 @@ class OrdersFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.orders_fragment, container, false)
+        binding = OrdersFragmentBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        binding.viewModel = this.viewModel
+
+        ordersRecyclerView = binding.ordersList
+        ordersRecyclerView.adapter = adapter
+        ordersRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        ordersRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                LinearLayoutManager.VERTICAL
+            )
+        )
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.ordersData.observe(viewLifecycleOwner, {
-            Log.d(TAG, "Data received in UI layer: $it")
+        viewModel.ordersData.observe(viewLifecycleOwner, { orders ->
+            orders.let { adapter.submitList(it) }
+            Log.d(TAG, "Data received in UI layer: $orders")
         })
 
-        viewModel.loading.observe(viewLifecycleOwner, { loadingState ->
-            when (loadingState) {
-                is LoadingState.Loading -> {
-                    Log.d(TAG, "LOADING state")
-                }
-                is LoadingState.Loaded -> {
-                    Log.d(TAG, "LOADED state")
-                }
-                is LoadingState.Failed -> {
-                    Log.d(TAG, "FAILED state")
-                }
-            }
-        })
         viewModel.retrieveRemoteOrders()
     }
 }
