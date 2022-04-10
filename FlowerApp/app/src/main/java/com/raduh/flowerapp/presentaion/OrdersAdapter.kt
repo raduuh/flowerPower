@@ -9,28 +9,35 @@ import com.raduh.flowerapp.core.data.OrderModel
 import com.raduh.flowerapp.databinding.OrderItemBinding
 
 
-class OrdersAdapter(private val itemClickListener: OnItemClickListener) :
+class OrdersAdapter(
+    private val itemClickListener: OnItemClickListener,
+    private val optionsMenuClickListener: OptionsMenuClickListener
+) :
     ListAdapter<OrderModel, OrdersAdapter.OrdersViewHolder>(ORDERS_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrdersViewHolder {
         val binding = OrderItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return OrdersViewHolder.create(binding, itemClickListener)
+        return OrdersViewHolder.create(binding, itemClickListener, optionsMenuClickListener)
     }
 
     override fun onBindViewHolder(holder: OrdersViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current)
+        holder.bind(current, position)
     }
 
 
     class OrdersViewHolder(
         private val binding: OrderItemBinding,
-        private val onItemClickListener: OnItemClickListener
+        private val onItemClickListener: OnItemClickListener,
+        private val optionsMenuClickListener: OptionsMenuClickListener
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(orderModel: OrderModel) {
+        fun bind(orderModel: OrderModel, position: Int) {
             binding.orderModel = orderModel
+            binding.orderStatusOption.setOnClickListener {
+                optionsMenuClickListener.onOptionsMenuClicked(position)
+            }
             binding.root.setOnClickListener {
                 onItemClickListener.onItemClicked(orderModel)
             }
@@ -39,9 +46,10 @@ class OrdersAdapter(private val itemClickListener: OnItemClickListener) :
         companion object {
             fun create(
                 binding: OrderItemBinding,
-                itemClickListener: OnItemClickListener
+                itemClickListener: OnItemClickListener,
+                optionsMenuClickListener: OptionsMenuClickListener
             ): OrdersViewHolder {
-                return OrdersViewHolder(binding, itemClickListener)
+                return OrdersViewHolder(binding, itemClickListener, optionsMenuClickListener)
             }
         }
     }
@@ -56,7 +64,8 @@ class OrdersAdapter(private val itemClickListener: OnItemClickListener) :
                 return (oldItem.id == newItem.id &&
                         oldItem.description == newItem.description &&
                         oldItem.price == newItem.price &&
-                        oldItem.deliverTo == newItem.deliverTo)
+                        oldItem.deliverTo == newItem.deliverTo &&
+                        oldItem.orderStatus == newItem.orderStatus)
             }
         }
     }

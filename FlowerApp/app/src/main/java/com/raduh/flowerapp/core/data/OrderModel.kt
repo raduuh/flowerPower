@@ -7,5 +7,7 @@ data class OrderModel(
     val price: String,
     val description: String,
     @SerializedName("deliver_to")
-    val deliverTo: String
+    val deliverTo: String,
+    @SerializedName("order_status")
+    var orderStatus: String
 )

@@ -3,8 +3,11 @@ package com.raduh.flowerapp.presentaion
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -21,11 +24,11 @@ import com.raduh.flowerapp.framework.service.RetrofitFactory
 
 private val TAG = OrdersFragment::class.java.name
 
-class OrdersFragment : Fragment(), OnItemClickListener {
+class OrdersFragment : Fragment() {
 
     private lateinit var ordersRecyclerView: RecyclerView
     private lateinit var binding: OrdersFragmentBinding
-    private val adapter = OrdersAdapter(this)
+    private val adapter by lazy { OrdersAdapter(onItemClickListener, optionsMenuClickListener) }
 
     private val viewModel by viewModels<OrdersViewModel> {
         OrdersViewModelFactory(
@@ -34,6 +37,27 @@ class OrdersFragment : Fragment(), OnItemClickListener {
                 RetrofitService(RetrofitFactory())
             )
         )
+    }
+
+    private val optionsMenuClickListener = object : OptionsMenuClickListener {
+        override fun onOptionsMenuClicked(position: Int) {
+            showOptionsMenu(position)
+        }
+    }
+
+    private val onItemClickListener = object : OnItemClickListener {
+        override fun onItemClicked(orderModel: OrderModel) {
+            val fragment = OrderDetailsFragment(orderModel)
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.container_view_fragment, fragment)
+                .addToBackStack(OrderDetailsFragment::javaClass.name).commit()
+        }
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.retrieveRemoteOrders()
     }
 
     override fun onCreateView(
@@ -64,14 +88,37 @@ class OrdersFragment : Fragment(), OnItemClickListener {
             orders.let { adapter.submitList(it) }
             Log.d(TAG, "Data received in UI layer: $orders")
         })
-
-        viewModel.retrieveRemoteOrders()
     }
 
-    override fun onItemClicked(orderModel: OrderModel) {
-        val fragment = OrderDetailsFragment(orderModel)
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.container_view_fragment, fragment)
-            .addToBackStack(OrderDetailsFragment::javaClass.name).commit()
+    fun showOptionsMenu(position: Int) {
+        val popupMenu = PopupMenu(
+            requireContext(),
+            binding.ordersList[position].findViewById(R.id.order_status_option)
+        )
+        popupMenu.inflate(R.menu.status_menu)
+        popupMenu.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+            val orders = viewModel.ordersData.value
+            override fun onMenuItemClick(item: MenuItem?): Boolean {
+                when (item?.itemId) {
+                    R.id.open_status -> {
+                        orders?.get(position)?.orderStatus = getString(R.string.open_text)
+                        adapter.notifyItemChanged(position)
+                        return true
+                    }
+                    R.id.in_progress_status -> {
+                        orders?.get(position)?.orderStatus = getString(R.string.in_progress_text)
+                        adapter.notifyItemChanged(position)
+                        return true
+                    }
+                    R.id.delivered_status -> {
+                        orders?.get(position)?.orderStatus = getString(R.string.delivered_text)
+                        adapter.notifyItemChanged(position)
+                        return true
+                    }
+                }
+                return false
+            }
+        })
+        popupMenu.show()
     }
 }

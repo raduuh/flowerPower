@@ -7,4 +7,9 @@
     <string name="price_text">Price: %s RON</string>
     <string name="description_text">Description: %s</string>
     <string name="delivery_to_text">Delivery to: %s</string>
+    <string name="order_status_text">Status:\n %s</string>
+    <string name="order_status_details_text">Order status: %s</string>
+    <string name="open_text">Open</string>
+    <string name="in_progress_text">In Progress</string>
+    <string name="delivered_text">Delivered</string>
 </resources>
