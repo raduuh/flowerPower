@@ -8,8 +8,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.orders_toolbar))
         this.supportFragmentManager.beginTransaction().add(
-            R.id.widgets_fragment,
+            R.id.container_view_fragment,
             OrdersFragment::class.java,
             null,
             OrdersFragment::class.java.name

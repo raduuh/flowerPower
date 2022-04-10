@@ -35,7 +35,7 @@
             style="@style/errorMessageStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/errorMessage"
+            android:text="@string/error_message"
             android:visibility="@{viewModel.error &amp;&amp; viewModel.ordersData.empty ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

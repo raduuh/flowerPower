@@ -10,6 +10,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.raduh.flowerapp.MainActivity
+import com.raduh.flowerapp.R
+import com.raduh.flowerapp.core.data.OrderModel
 import com.raduh.flowerapp.core.data.Repository
 import com.raduh.flowerapp.databinding.OrdersFragmentBinding
 import com.raduh.flowerapp.framework.RetrofitService
@@ -18,11 +21,11 @@ import com.raduh.flowerapp.framework.service.RetrofitFactory
 
 private val TAG = OrdersFragment::class.java.name
 
-class OrdersFragment : Fragment() {
+class OrdersFragment : Fragment(), OnItemClickListener {
 
     private lateinit var ordersRecyclerView: RecyclerView
     private lateinit var binding: OrdersFragmentBinding
-    private val adapter = OrdersAdapter()
+    private val adapter = OrdersAdapter(this)
 
     private val viewModel by viewModels<OrdersViewModel> {
         OrdersViewModelFactory(
@@ -51,6 +54,8 @@ class OrdersFragment : Fragment() {
             )
         )
 
+        (requireActivity() as MainActivity).supportActionBar?.title =
+            getString(R.string.order_title)
         return binding.root
     }
 
@@ -61,5 +66,12 @@ class OrdersFragment : Fragment() {
         })
 
         viewModel.retrieveRemoteOrders()
+    }
+
+    override fun onItemClicked(orderModel: OrderModel) {
+        val fragment = OrderDetailsFragment(orderModel)
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.container_view_fragment, fragment)
+            .addToBackStack(OrderDetailsFragment::javaClass.name).commit()
     }
 }

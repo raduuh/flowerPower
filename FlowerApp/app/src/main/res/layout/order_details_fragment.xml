@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="orderModel"
+            type="com.raduh.flowerapp.core.data.OrderModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_16"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/margin_16">
+
+        <TextView
+            android:id="@+id/order_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@{@string/description_text(orderModel.description)}"
+            app:layout_constraintBottom_toTopOf="@id/action_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/order_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_16"
+            android:gravity="center"
+            android:text="@{@string/price_text(orderModel.price)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/order_description" />
+
+        <TextView
+            android:id="@+id/delivery"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_16"
+            android:gravity="center"
+            android:text="@{@string/delivery_to_text(orderModel.deliverTo)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/order_price" />
+
+        <android.widget.Button
+            android:id="@+id/action_button"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dimen_60"
+            android:layout_marginBottom="@dimen/margin_24"
+            android:background="@drawable/rounded_corners"
+            android:text="@string/done_text"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/delivery" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
