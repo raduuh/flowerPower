@@ -1,10 +1,14 @@
 package com.raduh.flowerapp.presentaion
 
 import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.raduh.flowerapp.R
 import com.raduh.flowerapp.core.data.OrderModel
 import com.raduh.flowerapp.databinding.OrderItemBinding
 
@@ -36,11 +40,23 @@ class OrdersAdapter(
         fun bind(orderModel: OrderModel, position: Int) {
             binding.orderModel = orderModel
             binding.orderStatusOption.setOnClickListener {
-                optionsMenuClickListener.onOptionsMenuClicked(position)
+                showOptionsMenu(it, position)
             }
             binding.root.setOnClickListener {
                 onItemClickListener.onItemClicked(orderModel)
             }
+        }
+
+        private fun showOptionsMenu(view: View, position: Int) {
+            val popupMenu = PopupMenu(view.context, view)
+            popupMenu.inflate(R.menu.status_menu)
+            popupMenu.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+                override fun onMenuItemClick(item: MenuItem?): Boolean {
+                    item.let { optionsMenuClickListener.onOptionsMenuClicked(position, it!!) }
+                    return false
+                }
+            })
+            popupMenu.show()
         }
 
         companion object {
