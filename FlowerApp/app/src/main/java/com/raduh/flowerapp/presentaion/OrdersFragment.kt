@@ -92,11 +92,11 @@ class OrdersFragment : Fragment() {
         val orders = viewModel.ordersData.value
         when (item.itemId) {
             R.id.open_status -> {
-                orders?.get(position)?.orderStatus = getString(R.string.open_text)
+                orders?.get(position)?.orderStatus = getString(R.string.new_text)
                 adapter.notifyItemChanged(position)
             }
             R.id.in_progress_status -> {
-                orders?.get(position)?.orderStatus = getString(R.string.in_progress_text)
+                orders?.get(position)?.orderStatus = getString(R.string.pending_text)
                 adapter.notifyItemChanged(position)
             }
             R.id.delivered_status -> {
