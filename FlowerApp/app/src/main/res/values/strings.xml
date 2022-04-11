@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">FlowerApp</string>
+    <string name="order_title">Flower orders</string>
+    <string name="order_details_title">Order details</string>
+    <string name="error_message">Something went wrong when retrieving the orders</string>
+    <string name="done_text">Done</string>
+    <string name="price_text">Price: %s RON</string>
+    <string name="description_text">Description: %s</string>
+    <string name="delivery_to_text">Delivery to: %s</string>
+    <string name="order_status_text">Status:\n %s</string>
+    <string name="order_status_details_text">Order status: %s</string>
+    <string name="new_text">New</string>
+    <string name="pending_text">Pending</string>
+    <string name="delivered_text">Delivered</string>
 </resources>
